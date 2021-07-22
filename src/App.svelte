@@ -1,0 +1,177 @@
+<script>
+	import { Router, Route } from "svelte-navigator";
+
+	import Home from "./pages/Home.svelte";
+	import About from "./pages/About.svelte";
+	import Skills from "./pages/Skills.svelte";
+	import Projects from "./pages/Projects.svelte";
+	import Contact from "./pages/Contact.svelte";
+  import NotFound from "./pages/NotFound.svelte";
+
+  import CNavIcon from "./components/NavIcon.svelte";
+  import Particles from "./components/Particles.svelte";
+	
+</script>
+
+<main>
+	<Router>
+
+			<div id='menu'>
+				<nav id='nav'>
+          <CNavIcon
+            to="/"
+            name="home"
+            iconName="fas fa-home"
+          />
+          <CNavIcon 
+            to="about"
+            iconName="fas fa-user-circle"
+          />
+          <CNavIcon
+            to="skills"
+            iconName="fas fa-cog"
+          />
+          <CNavIcon
+            to="projects"
+            iconName="fas fa-laptop-code"
+            iconStyle="font-size: 20px;"
+          />
+          <CNavIcon
+            to="contact"
+            iconName="fas fa-envelope"
+          />
+				</nav>
+			</div>
+
+		<div id="content">
+			<Route path="/" component={Home} />
+			<Route path="/about" component={About} />
+			<Route path="/skills" component={Skills} />
+			<Route path="/projects" component={Projects} />
+			<Route path="/contact" component={Contact} />
+      <Route component={NotFound} />
+		</div>
+
+	</Router>
+</main>
+<Particles />
+
+<style lang='scss'>
+
+
+  /* menu */
+  #menu {
+    background: #181818; /* #2f2f2f */
+    color: var(--color-subtle);
+    width: var(--menu-offset);
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 3;
+    /* min-height: 500px; */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center; /* center */
+
+
+    text-align: center;
+    /* position: absolute; */
+    height: 210px;
+    /* top: 50%; */
+    /* margin-top: -120px; */
+    width: 100%;
+
+    font-family: 'Inconsolata', monospace;
+  }
+
+
+  #nav :global(a) {
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    font-size: 22px;
+    height: 51px;
+    line-height: 51px;
+    width: 100%;
+  }
+
+  #nav :global(a.active) {
+    color: var(--color-highlight, orange);
+  }
+
+  #content {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding-left: var(--menu-offset);
+
+    /* min-height: 600px; */
+    /* min-height: calc( 100vh - var(--content-padding) * 2 ); */
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+
+
+  @media (max-width: 960px) {
+    #menu {
+        width: 100%;
+        height: var(--menu-offset);
+        min-height: 0;
+        bottom: 0;
+        top: auto;
+    }
+    #nav {
+      flex-direction: row;
+      min-width: 250px;
+      width: 42%;
+      /* left: 50%; */
+      /* margin-left: -19%; */
+      /* float: left; */
+      overflow: hidden;
+      text-align: center;
+      height: 60px;
+      /* top: 0; */
+      /* margin-top: 0; */
+    }
+
+    #content
+    /* ,#particles  */
+    {
+      padding-left: 0;
+      padding-bottom: var(--menu-offset);
+    }
+
+
+  :global(.modern-theme) {
+    #menu {
+      background: #050215; 
+      background: rgba(0,0,0,.4);
+      border-right: 1px solid var(--color-subtle);
+    }
+
+    @media (max-width: 960px) {
+      #menu {
+        background: rgba(0,0,0,.8);
+        border-right: none;
+        border-top: 1px solid var(--color-subtle);
+      }
+    }
+  } 
+
+
+/* **** */
+  }
+</style>
