@@ -9,10 +9,10 @@
   import NotFound from "./pages/NotFound.svelte";
 
   import CNavIcon from "./components/NavIcon.svelte";
-  import Particles from "./components/Particles.svelte";
-	
+  import Particles from "./components/particles/Particles.svelte";
 </script>
 
+<Particles />
 <main>
 	<Router>
 
@@ -44,17 +44,16 @@
 			</div>
 
 		<div id="content">
-			<Route path="/" component={Home} />
-			<Route path="/about" component={About} />
-			<Route path="/skills" component={Skills} />
-			<Route path="/projects" component={Projects} />
-			<Route path="/contact" component={Contact} />
-      <Route component={NotFound} />
+			<Route path="/"><Home/></Route>
+			<Route path="/about"><About/></Route>
+			<Route path="/skills"><Skills/></Route>
+			<Route path="/projects"><Projects/></Route>
+			<Route path="/contact"><Contact/></Route>
+      <Route><NotFound/></Route>
 		</div>
 
 	</Router>
 </main>
-<Particles />
 
 <style lang='scss'>
 
@@ -94,7 +93,7 @@
 
 
   #nav :global(a) {
-    color: inherit;
+    // color: inherit;
     text-decoration: none;
     position: relative;
     display: inline-block;
@@ -104,9 +103,9 @@
     width: 100%;
   }
 
-  #nav :global(a.active) {
-    color: var(--color-highlight, orange);
-  }
+  // #nav :global(a.active) {
+  //   color: var(--color-highlight, orange);
+  // }
 
   #content {
     box-sizing: border-box;
@@ -154,8 +153,10 @@
       padding-bottom: var(--menu-offset);
     }
 
+  }
 
   :global(.modern-theme) {
+
     #menu {
       background: #050215; 
       background: rgba(0,0,0,.4);
@@ -170,8 +171,4 @@
       }
     }
   } 
-
-
-/* **** */
-  }
 </style>

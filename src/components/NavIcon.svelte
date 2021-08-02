@@ -1,25 +1,52 @@
 <script lang='ts'>
-	import { Link } from "svelte-navigator";
+	import { Link, useLocation } from "svelte-navigator";
+
+  const removeSlashes = (str: string) => str.replace('/', '');
 
   export let to: string = '';
-  export let name: string = to.replace("/", '');
+  export let name: string = removeSlashes(to);
 
   export let iconName: string;
   export let iconStyle: string = '';
+
+
+  const location = useLocation();
+  $: active = 
+    removeSlashes($location.pathname) === removeSlashes(to);
+
 </script>
 
-<Link 
-  to={to} 
-  class='icon-to-text-on-hover'
+<div
+  class:navicon={true}
+  class:icon-to-text-on-hover={true}
+  class:active
   style="--hover-text: '{name}'"
-  aria-label={`menu-${name}`}
+
 >
-  <i class={iconName} style={iconStyle}/>
-</Link>
+  <Link 
+    to={to} 
+    aria-label={`nav-menu-${name}`}
+  >
+    <i class={iconName} style={iconStyle}/>
+  </Link>
+</div>
 
 <style lang="scss">
+
+  .navicon {
+    :global(a) {
+      color: inherit;
+    }
+
+    &.active {
+      color: var(--color-highlight, orange);
+    }
+  }
+
+
+
  
-    :global(.icon-to-text-on-hover) {
+    .icon-to-text-on-hover {
       position: relative;
 
       i {

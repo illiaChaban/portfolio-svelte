@@ -27,25 +27,25 @@ const dependancies = {
   ]
 };
 let loadedFonts = {};
-let loadedScripts = {};
+let loadedScripts: Record<string, Promise<true>> = {};
 let loadedCss = {};
 let cachedContent = {};
 
 
-const loadResource = (hrefOrName, type) => {
-  const switcher = {
-    'font' : loadFont,
-    'script': loadScript,
-    'css': loadCss
-  };
-  let loader = switcher[type];
-  return loader(hrefOrName); 
-};
-const loadDependacies = (pageName) => {
-  if ( !(pageName in dependancies)) return Promise.resolve();
-  let deps = dependancies[pageName].map(([link, type]) => loadResource(link, type) );
-  return Promise.all( deps );
-}
+// const loadResource = (hrefOrName: any, type: string) => {
+//   const switcher = {
+//     'font' : loadFont,
+//     'script': loadScript,
+//     'css': loadCss
+//   };
+//   let loader = switcher[type];
+//   return loader(hrefOrName); 
+// };
+// const loadDependacies = (pageName: string) => {
+//   if ( !(pageName in dependancies)) return Promise.resolve();
+//   let deps = dependancies[pageName].map(([link, type]) => loadResource(link, type) );
+//   return Promise.all( deps );
+// }
 // const initPage = (pageName) => {
 //   return loadDependacies(pageName)
 //           .then( () => {
@@ -56,37 +56,37 @@ const loadDependacies = (pageName) => {
 // };
 
 // has a bug. If loading 2 fonts asynchronously in a row the second promise isn't being resolved
-const loadFont = (familyName) => {
-  // starting to load the font and returning a promise
-  if ( !(familyName in loadedFonts) ) {
-    let escapedSpaceFont = familyName.replace(/\s/g, "+");
-    let fontSyncLoaded = document.querySelector(`link[href*="fonts.googleapis.com"][href*="${escapedSpaceFont}"]`);
-    if (fontSyncLoaded) {
-      loadedFonts[familyName] = Promise.resolve();
-      // console.log("Font was sync loaded -- " + familyName);
-    } else {
-      loadedFonts[familyName] = new Promise( async (resolve,reject) => {
-        // adjustment for slow network or not existing font family
-        setTimeout( () => reject("loading cancelled - slow network or bad request"), 3000 );
-        await loadScript("https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js");
+// const loadFont = (familyName: string) => {
+//   // starting to load the font and returning a promise
+//   if ( !(familyName in loadedFonts) ) {
+//     let escapedSpaceFont = familyName.replace(/\s/g, "+");
+//     let fontSyncLoaded = document.querySelector(`link[href*="fonts.googleapis.com"][href*="${escapedSpaceFont}"]`);
+//     if (fontSyncLoaded) {
+//       loadedFonts[familyName] = Promise.resolve();
+//       // console.log("Font was sync loaded -- " + familyName);
+//     } else {
+//       loadedFonts[familyName] = new Promise( async (resolve,reject) => {
+//         // adjustment for slow network or not existing font family
+//         setTimeout( () => reject("loading cancelled - slow network or bad request"), 3000 );
+//         await loadScript("https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js");
 
-        WebFont.load({
-          google: {
-            families: [ familyName ]
-          },
-          active() {
-            resolve(true);
-            // clearTimeout(timeout);
-            // console.log("Font was async loaded -- " + familyName);
-          },
-          inactive: () => reject("inactive")
-        });
-      }).catch( (e) => (console.warn(`Failed to load font ${familyName} --`, e), e) );
-    }
-  }
-  return loadedFonts[familyName];
-};
-const loadScript = ( src ) => {
+//         WebFont.load({
+//           google: {
+//             families: [ familyName ]
+//           },
+//           active() {
+//             resolve(true);
+//             // clearTimeout(timeout);
+//             // console.log("Font was async loaded -- " + familyName);
+//           },
+//           inactive: () => reject("inactive")
+//         });
+//       }).catch( (e) => (console.warn(`Failed to load font ${familyName} --`, e), e) );
+//     }
+//   }
+//   return loadedFonts[familyName];
+// };
+const loadScript = ( src: string ) => {
   if ( !(src in loadedScripts) ) {
     loadedScripts[src] = new Promise( (resolve,reject) => {
       let s = document.createElement('script');
@@ -97,42 +97,42 @@ const loadScript = ( src ) => {
         resolve(true)
       };
       s.onerror = reject;
-      document.querySelector('body').appendChild(s);
+      document.querySelector('body')!.appendChild(s);
     })
   }
   return loadedScripts[src];
 };
-const loadCss = (src) => {
-  if ( !(src in loadedCss) ) {
-    if (document.querySelector(`link[href='${src}']:not([rel="preload"])`)) {
-      loadedCss[src] = Promise.resolve();
-      // console.log("CSS src = " + src + " was sync loaded");
-    } else {
-      loadedCss[src] = new Promise( (resolve,reject) => {
-        let s = document.createElement('link');
-        s.setAttribute('href', src);
-        s.setAttribute('rel', 'stylesheet');
-        s.setAttribute('type', 'text/css')
-        s.onload = () => {
-          // console.log("LOADED CSS src = " + src);
-          // console.log(s.sheet.cssRules[0].cssText)
-          resolve(true);
-        };
-        s.onerror = reject;
-        document.querySelector('head').appendChild(s);
-      });
-    }
-  }
-  return loadedCss[src];
-};
+// const loadCss = (src: string) => {
+//   if ( !(src in loadedCss) ) {
+//     if (document.querySelector(`link[href='${src}']:not([rel="preload"])`)) {
+//       loadedCss[src] = Promise.resolve();
+//       // console.log("CSS src = " + src + " was sync loaded");
+//     } else {
+//       loadedCss[src] = new Promise( (resolve,reject) => {
+//         let s = document.createElement('link');
+//         s.setAttribute('href', src);
+//         s.setAttribute('rel', 'stylesheet');
+//         s.setAttribute('type', 'text/css')
+//         s.onload = () => {
+//           // console.log("LOADED CSS src = " + src);
+//           // console.log(s.sheet.cssRules[0].cssText)
+//           resolve(true);
+//         };
+//         s.onerror = reject;
+//         document.querySelector('head').appendChild(s);
+//       });
+//     }
+//   }
+//   return loadedCss[src];
+// };
 
-const found = {};
-const find = (selector) => {
-  if ( !(selector in found) ) {
-    found[selector] = document.querySelector(selector);
-  }
-  return found[selector];
-}
+// const found = {};
+// const find = (selector: string) => {
+//   if ( !(selector in found) ) {
+//     found[selector] = document.querySelector(selector);
+//   }
+//   return found[selector];
+// }
 
 // const updateContent = async (href) => {
 //   showLoadingWindow();
@@ -152,23 +152,23 @@ const find = (selector) => {
 
 // caching values to avoid executing the function with the same
 // arguments multiple times
-let cachedPageNames = {}; 
-const getPageName = (href) => {
-  if ( !(href in cachedPageNames)) {
-    let path = href.split("/");
-    let lastPath = path[path.length-1];
-    cachedPageNames[href] = lastPath === '' ? 
-      'index':
-      href.match( pageMatcher )[1];
-  }
-  return cachedPageNames[href];
-};
-const getCurrPageName = () => getPageName(document.location.pathname);
-const cacheCurrContent = () => {
-  let page = getCurrPageName();
-  let contents = [...find('#content').childNodes];
-  cachedContent[page] = Promise.resolve(contents);
-};
+// let cachedPageNames = {}; 
+// const getPageName = (href: string) => {
+//   if ( !(href in cachedPageNames)) {
+//     let path = href.split("/");
+//     let lastPath = path[path.length-1];
+//     cachedPageNames[href] = lastPath === '' ? 
+//       'index':
+//       href.match( pageMatcher )[1];
+//   }
+//   return cachedPageNames[href];
+// };
+// const getCurrPageName = () => getPageName(document.location.pathname);
+// const cacheCurrContent = () => {
+//   let page = getCurrPageName();
+//   let contents = [...find('#content').childNodes];
+//   cachedContent[page] = Promise.resolve(contents);
+// };
 
 // const getContent = (pageName) => {
 //   if ( !(pageName in cachedContent)) {
@@ -187,41 +187,41 @@ const cacheCurrContent = () => {
 //   }
 //   return cachedContent[pageName];
 // };
-const loadParsedHtml = async (href) => {
-  let html = await fetch(href).then( res => res.text() );    
-  let doc = parser.parseFromString(html, "text/html");
-  return doc;
-};
+// const loadParsedHtml = async (href: RequestInfo) => {
+//   let html = await fetch(href).then( res => res.text() );    
+//   let doc = parser.parseFromString(html, "text/html");
+//   return doc;
+// };
 
-const showLoadingWindow = () => {
-  find('#loading').classList.remove('hide');
-  find('#content').classList.add('hide');
-};
-const hideLoadingWindow = () => {
-  find('#loading').classList.add('hide');
-  find('#content').classList.remove('hide');
-  fadeInContent();
-};
-const fadeInContent = () => {
-  let c = find('#content').classList;
-  let f1 = 'fadeIn';
-  let f2 = 'fadeIn2';
-  // toggle between fadeIn & fadeIn2 classes (identical)
-  // to force animation to execute
-  c.replace(f1, f2) || c.replace(f2, f1) || c.add(f1);
-}
+// const showLoadingWindow = () => {
+//   find('#loading').classList.remove('hide');
+//   find('#content').classList.add('hide');
+// };
+// const hideLoadingWindow = () => {
+//   find('#loading').classList.add('hide');
+//   find('#content').classList.remove('hide');
+//   fadeInContent();
+// };
+// const fadeInContent = () => {
+//   let c = find('#content').classList;
+//   let f1 = 'fadeIn';
+//   let f2 = 'fadeIn2';
+//   // toggle between fadeIn & fadeIn2 classes (identical)
+//   // to force animation to execute
+//   c.replace(f1, f2) || c.replace(f2, f1) || c.add(f1);
+// }
 
-let activeLink = null;
-const highlightActiveMenu = (href=document.location.pathname) => {
-  const $nav = document.getElementById('nav');
-  let pageName = getPageName(href);
-  let currLink = $nav.querySelector(`a[href^=${pageName}]`);
-  if (activeLink) activeLink.classList.remove('active');
-  if (currLink) {
-    currLink.classList.add('active');
-    activeLink = currLink;
-  }
-};
+// let activeLink: Element | null = null;
+// const highlightActiveMenu = (href=document.location.pathname) => {
+//   const $nav = document.getElementById('nav');
+//   let pageName = getPageName(href);
+//   let currLink = $nav.querySelector(`a[href^=${pageName}]`);
+//   if (activeLink) activeLink.classList.remove('active');
+//   if (currLink) {
+//     currLink.classList.add('active');
+//     activeLink = currLink;
+//   }
+// };
 
 // const navigateToPage = (href, updateUrl=true) => {
 //   updateContent(href);
@@ -234,40 +234,40 @@ const highlightActiveMenu = (href=document.location.pathname) => {
 
 
 
-const loadImg = (src) => {
-  let img = new Image();
-  let promise = new Promise( (resolve, reject) => {
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-  })
-  img.src = src;
-  return promise;
-};
+// const loadImg = (src: string) => {
+//   let img = new Image();
+//   let promise = new Promise( (resolve, reject) => {
+//     img.onload = () => resolve(img);
+//     img.onerror = reject;
+//   })
+//   img.src = src;
+//   return promise;
+// };
 
-const loadedImgs = {};
-const loadSvg = src => {
-  if ( !(src in loadedImgs) ) {
-    loadedImgs[src] = new Promise( async (resolve, reject) => {
-      try {
-        let svgText = await fetch(src).then( res => res.text() );
-        const parsed = parser.parseFromString(svgText, 'image/svg+xml');
-        const svgEl = parsed.querySelector('svg');
-        resolve(svgEl);
-      } catch(e) {
-        console.warn(e);
-        reject();
-      }
-    })
-  }
-  return loadedImgs[src];
-};
+// const loadedImgs = {};
+// const loadSvg = (src: RequestInfo) => {
+//   if ( !(src in loadedImgs) ) {
+//     loadedImgs[src] = new Promise( async (resolve, reject) => {
+//       try {
+//         let svgText = await fetch(src).then( res => res.text() );
+//         const parsed = parser.parseFromString(svgText, 'image/svg+xml');
+//         const svgEl = parsed.querySelector('svg');
+//         resolve(svgEl);
+//       } catch(e) {
+//         console.warn(e);
+//         reject();
+//       }
+//     })
+//   }
+//   return loadedImgs[src];
+// };
 
-const onDocumentReady = ( callback ) => {
-  // console.log("ON DOCUMENT READY CALLED", document.readyState, {cb: callback.toString()})
-  document.readyState === 'loading' ? 
-    window.addEventListener('DOMContentLoaded', callback ) :
-    callback();
-};
+// const onDocumentReady = ( callback: EventListenerOrEventListenerObject ) => {
+//   // console.log("ON DOCUMENT READY CALLED", document.readyState, {cb: callback.toString()})
+//   document.readyState === 'loading' ? 
+//     window.addEventListener('DOMContentLoaded', callback ) :
+//     callback();
+// };
 
 
 
@@ -296,14 +296,8 @@ const onDocumentReady = ( callback ) => {
 // 	return [x,y];
 // };
 
-const getCssVariable = (name) => {
-  const bodyStyle = getComputedStyle(document.body);
-  const value = bodyStyle.getPropertyValue(name).trim();
-  return value;
-};
-
 const calledOnce = new Map();
-const callOnce = (...functions) => {
+const callOnce = (...functions: any[]) => {
   for( let func of functions) {
     if (calledOnce.has(func)) continue;
     try {
@@ -323,16 +317,16 @@ const spinnerHTML = `
     <div class="blob move-blob"></div>
   </div>  
 `;
-const showSpinner = (parentEl) => {
+const showSpinner = (parentEl: any) => {
   removeSpinner(parentEl);
   parentEl.insertAdjacentHTML('afterbegin', spinnerHTML);
 };
-const removeSpinner = (parentEl) => {
-  parentEl.querySelectorAll('.spinner').forEach( x => parentEl.removeChild(x));
+const removeSpinner = (parentEl: { querySelectorAll: (arg0: string) => any[]; removeChild: (arg0: any) => any; }) => {
+  parentEl.querySelectorAll('.spinner').forEach( (x: any) => parentEl.removeChild(x));
 }
 
 
-const abortableFetch = function(url) {
+const abortableFetch = function(url: RequestInfo) {
   const controller = new AbortController();
   const signal = controller.signal;
   return {
@@ -340,24 +334,23 @@ const abortableFetch = function(url) {
     abort: () => controller.abort()
   };
 };
-const loadImgWithTimeout = (url, timeout) => {
-  let promiseUrl;
-  try { // making sure fetch abort is supported
-    let fetched = abortableFetch(url);
-    setTimeout( fetched.abort, timeout );
-    promiseUrl = fetched.ready
-      .then( res => res.blob() )
-      .then( blob => URL.createObjectURL(blob))
-  } catch(e) {
-    console.log('Abortable fetch is not supported');
-    promiseUrl = loadImg(url).then( () => url );
-  }
-  return promiseUrl;
-};
+// const loadImgWithTimeout = (url: any, timeout: number | undefined) => {
+//   let promiseUrl;
+//   try { // making sure fetch abort is supported
+//     let fetched = abortableFetch(url);
+//     setTimeout( fetched.abort, timeout );
+//     promiseUrl = fetched.ready
+//       .then( res => res.blob() )
+//       .then( blob => URL.createObjectURL(blob))
+//   } catch(e) {
+//     console.log('Abortable fetch is not supported');
+//     promiseUrl = loadImg(url).then( () => url );
+//   }
+//   return promiseUrl;
+// };
 
 export const lazy = {
-  // loadScript,
-  getCssVariable,
+  loadScript,
 }
 
 
