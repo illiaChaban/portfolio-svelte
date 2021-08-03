@@ -1,7 +1,7 @@
 <script>
 	import { Router, Route } from "svelte-navigator";
 
-	import Home from "./pages/Home.svelte";
+	import Home from "./pages/home/Home.svelte";
 	import About from "./pages/About.svelte";
 	import Skills from "./pages/Skills.svelte";
 	import Projects from "./pages/Projects.svelte";
@@ -57,8 +57,6 @@
 
 <style lang='scss'>
 
-
-  /* menu */
   #menu {
     background: #181818; /* #2f2f2f */
     color: var(--color-subtle);
@@ -67,7 +65,6 @@
     position: fixed;
     top: 0;
     z-index: 3;
-    /* min-height: 500px; */
 
     display: flex;
     justify-content: center;
@@ -78,34 +75,12 @@
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: center; /* center */
-
+    align-items: center;
 
     text-align: center;
-    /* position: absolute; */
     height: 210px;
-    /* top: 50%; */
-    /* margin-top: -120px; */
-    width: 100%;
-
-    font-family: 'Inconsolata', monospace;
-  }
-
-
-  #nav :global(a) {
-    // color: inherit;
-    text-decoration: none;
-    position: relative;
-    display: inline-block;
-    font-size: 22px;
-    height: 51px;
-    line-height: 51px;
     width: 100%;
   }
-
-  // #nav :global(a.active) {
-  //   color: var(--color-highlight, orange);
-  // }
 
   #content {
     box-sizing: border-box;
@@ -114,15 +89,11 @@
     position: relative;
     padding-left: var(--menu-offset);
 
-    /* min-height: 600px; */
-    /* min-height: calc( 100vh - var(--content-padding) * 2 ); */
     min-height: 100vh;
 
     display: flex;
     flex-direction: column;
   }
-
-
 
   @media (max-width: 960px) {
     #menu {
@@ -136,18 +107,12 @@
       flex-direction: row;
       min-width: 250px;
       width: 42%;
-      /* left: 50%; */
-      /* margin-left: -19%; */
-      /* float: left; */
       overflow: hidden;
       text-align: center;
       height: 60px;
-      /* top: 0; */
-      /* margin-top: 0; */
     }
 
     #content
-    /* ,#particles  */
     {
       padding-left: 0;
       padding-bottom: var(--menu-offset);

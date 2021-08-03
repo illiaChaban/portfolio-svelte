@@ -97,7 +97,7 @@ const loadScript = ( src: string ) => {
         resolve(true)
       };
       s.onerror = reject;
-      document.querySelector('body')!.appendChild(s);
+      document.body.appendChild(s);
     })
   }
   return loadedScripts[src];

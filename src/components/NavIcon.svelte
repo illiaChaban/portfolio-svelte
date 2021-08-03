@@ -30,6 +30,15 @@
 
   a {
     color: inherit;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    font-size: 22px;
+    height: 51px;
+    line-height: 51px;
+    width: 100%;
+    font-family: 'Inconsolata', monospace;
+
     &.active {
       color: var(--color-highlight, orange);
     }
@@ -78,4 +87,5 @@
     }
 
   }
+  
 </style>
