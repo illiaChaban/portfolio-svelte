@@ -1,10 +1,10 @@
-import { lazy } from "../../utils/lazy"
+import { loadScript } from "../../utils/loadScript"
 
 declare function particlesJS(id: string, config: Record<string, any>): void;
 
 export const initParticles = async (containerId: string, color: string) => {
   
-  await lazy.loadScript('other/js/part1cl3sLibrary.js');
+  await loadScript('other/js/part1cl3sLibrary.js');
   
   particlesJS(
     containerId, 

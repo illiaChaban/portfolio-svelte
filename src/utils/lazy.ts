@@ -27,7 +27,7 @@ const dependancies = {
   ]
 };
 let loadedFonts = {};
-let loadedScripts: Record<string, Promise<true>> = {};
+// let loadedScripts: Record<string, Promise<true>> = {};
 let loadedCss = {};
 let cachedContent = {};
 
@@ -326,14 +326,14 @@ const removeSpinner = (parentEl: { querySelectorAll: (arg0: string) => any[]; re
 }
 
 
-const abortableFetch = function(url: RequestInfo) {
-  const controller = new AbortController();
-  const signal = controller.signal;
-  return {
-    ready: fetch( url, {signal}),
-    abort: () => controller.abort()
-  };
-};
+// const abortableFetch = function(url: RequestInfo) {
+//   const controller = new AbortController();
+//   const signal = controller.signal;
+//   return {
+//     ready: fetch( url, {signal}),
+//     abort: () => controller.abort()
+//   };
+// };
 // const loadImgWithTimeout = (url: any, timeout: number | undefined) => {
 //   let promiseUrl;
 //   try { // making sure fetch abort is supported
@@ -349,9 +349,9 @@ const abortableFetch = function(url: RequestInfo) {
 //   return promiseUrl;
 // };
 
-export const lazy = {
-  loadScript,
-}
+// export const lazy = {
+//   loadScript,
+// }
 
 
 // TODO: add gtagSetPath on page navigation
