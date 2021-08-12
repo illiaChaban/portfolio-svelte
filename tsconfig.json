@@ -4,11 +4,11 @@
   "compilerOptions": {
     "strict": true,
 
-    "baseUrl": ".",
-    "paths": {
-      "@actions/*": ["src/actions/*"],
-      "@components/*": ["src/components/*"]
-    }
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@actions/*": ["src/actions/*"],
+    //   "@components/*": ["src/components/*"]
+    // }
   },
 
   "include": ["src/**/*"],

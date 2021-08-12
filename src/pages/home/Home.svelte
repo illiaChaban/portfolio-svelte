@@ -1,25 +1,15 @@
 <script lang="ts">
   import { navigate } from "svelte-navigator";
-  import Button from "@components/Button.svelte";
+  import Button from "../../components/Button.svelte";
+  import Greeting from "./components/Greeting.svelte";
 
   // const c = cButton
 </script>
 
-<!-- <div> -->
+<div>
   <div class='home-text padding-15 body-tags'>
     <div class="div-tags text-container">
-      <h1 class="ml8">
-        <span class="letters-container">
-          <span class="letters letters-left">Hi</span>
-          <span class="letters bang">!</span>
-        </span>
-        <span class="circle circle-white"></span>
-        <span class="circle circle-dark"></span>
-        <span class="circle circle-container"><span class="circle circle-dark-dashed"></span></span>
-      </h1>
-  
-      <h1 class="header ml3">I'm Illia,</h1>
-      <h1 class="header ml3">I build things</h1>
+      <Greeting />
       <h2 class='subtle'>Full Stack | TS | Angular | React Native | C# | .Net</h2>
       
       <div id="btn-container">
@@ -51,7 +41,7 @@
       </div>
     </div>
   </div>
-<!-- </div> -->
+</div>
 
 <style lang="scss">
 
@@ -272,109 +262,6 @@ h1.header {
 
   .home-text .text-container {
     margin-top: 70px;
-  }
-}
-
-/* ********************************************************** */
-/* ********************************************************** */
-/* ******************* text animations ********************** */
-
-/* HI! */
-.ml8 {
-  font-weight: 900;
-  width: 3em;
-  height: 3em;
-  position: relative;
-  margin: 0;
-  /* aligning HI to the rest of the header */
-  transform: translate( -25px, 15px);
-  z-index: -1;
-
-}
-
-.ml8 .letters-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 0;
-  bottom: 0;
-  height: 1em;
-  text-align: center; /* centering text */
-}
-
-.ml8 .letters {
-  position: relative;
-  z-index: 2;
-  display: inline-block;
-  line-height: 0.7em;
-  right: -0.12em;
-  top: -0.2em;
-}
-
-.ml8 .bang {
-  /* font-size: 1.4em; */
-  top: auto;
-  left: -0.06em;
-}
-
-.ml8 .circle {
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: auto;
-  top: 0;
-  bottom: 0;
-}
-
-.ml8 .circle-white {
-  width: 3em;
-  height: 3em;
-  border: 2px dashed var(--color-main, white);
-  border-radius: 2em;
-}
-
-.ml8 .circle-dark {
-  width: 2.2em;
-  height: 2.2em;
-  background-color: #4f7b86;
-  border-radius: 3em;
-  z-index: 1;
-}
-
-.ml8 .circle-dark-dashed {
-  border-radius: 2.4em;
-  background-color: transparent;
-  border: 2px dashed var(--color-highlight);
-  width: 2.3em;
-  height: 2.3em;
-  /* animation-name: rotate360;
-  animation-duration: 8s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear; */
-
-  -webkit-animation: rotate360 8s linear infinite;
-          animation: rotate360 8s linear infinite;
-}
-
-
-@-webkit-keyframes rotate360 {
-  from {
-    transform: rotateZ(0deg);
-  }
-
-  to {
-    transform: rotateZ(360deg);
-  }
-}
-
-@keyframes rotate360 {
-  from {
-    transform: rotateZ(0deg);
-  }
-
-  to {
-    transform: rotateZ(360deg);
   }
 }
 

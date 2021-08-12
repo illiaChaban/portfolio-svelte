@@ -67,7 +67,7 @@ export default {
 
 			// quick fix: fixing issue where you can't import 
 			// typescript files inside components
-			// rootDir: '/.src',
+			rootDir: '/.src', 
 		}),
 
 		// In dev mode, call `npm run start` once
@@ -83,12 +83,12 @@ export default {
 		production && terser(),
 
 		// path aliases
-		alias({
-			resolve: ['.svelte', '.js'],
-			entries: [
-				{ find: '@components', replacement: 'src/components' }
-			]
-		})
+		// alias({
+		// 	resolve: ['.svelte', '.js', '.ts'],
+		// 	entries: [
+		// 		{ find: '@components', replacement: 'src/components' }
+		// 	]
+		// })
 	],
 	watch: {
 		clearScreen: false
