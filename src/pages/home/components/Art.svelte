@@ -1,116 +1,63 @@
 <script lang="ts">
-import { onMount } from "svelte";
-import { abortableFetch } from "../../../utils/abortableFetch";
-import { loadImg, loadImgWithTimeout } from "../../../utils/loadImg";
+  import { onMount } from "svelte";
+  import CachedImg from "../../../components/cached-img/CachedImg.svelte";
 
+  let artRef: HTMLElement
+  let rvContainerRef: HTMLElement
 
-
-
-
-const prepareArt = () => {
-    // rendering rv and squirrel
-    const $art = document.getElementById('art') as HTMLElement;
-    const $rvContainer = document.getElementById('rv-squirrel-container') as HTMLElement;
-    const $content = document.getElementById('content') as HTMLElement;
-  
-  
+  const prepareArt = () => {  
     const updateArtWidth = () => {
       // in case content was hidden to rerender css animations etc. use body as a fallback
-      let contentWidth = $content.offsetWidth || document.body.offsetWidth;
+      const contentWidth = document.body.offsetWidth;
       // set content width in pixels instead of percentage
-      $art.style.setProperty( '--content-width', `${contentWidth}px`);
+      artRef.style.setProperty( '--content-width', `${contentWidth}px`);
     };
     updateArtWidth();
     window.addEventListener('resize', updateArtWidth);
     // show squirrel and rv after css variable was updated to indicate
     // content width in pixels
-    $rvContainer.classList.remove('hide'); 
+    rvContainerRef.classList.remove('hide'); 
   }
 
-  const webpIsSupported = (currentImageSrc: string): boolean => {
-    const l = currentImageSrc.length;
-    const last4extension = currentImageSrc.slice(l-4, l);
-    return last4extension === 'webp';
-  };
-  const getImgCurrSrc = (img: HTMLImageElement): Promise<string> | string => {
-    return img.complete ? 
-      img.currentSrc : 
-      new Promise( resolve => {
-        img.onload = () => resolve(img.currentSrc);
-      });
-  };
-  const getBetterQualityImgSrc = async (img: HTMLImageElement) => {
-    const loadedSrc = await getImgCurrSrc(img);
-    const src1part = img.getAttribute('data-src');
-    let src;
-    // checking if .webp next gen image format is supported
-    if (webpIsSupported(loadedSrc)) {
-      src = src1part + '.webp';
-    } else {
-      const size = window.innerWidth > 650 ? '' : '-small';
-      src = src1part + size + '.png';
-    }
-    return src;
-  };
-  const takeImgOutsideOfPicture = (img: HTMLImageElement, picture: Element) => {
-    // remove picture element, update img src
-    let container = picture.parentElement as HTMLElement;
-    // rv should be removed from picture first to 
-    // prevent extra img request on picture.remove()
-    container.insertBefore(img, picture);
-    container.removeChild(picture);
-  }
-
-  const loadBetterQualityImg = async (picture: Element, timeout: number) => {
-    const img = picture.querySelector('img') as HTMLImageElement;
-    const src = await getBetterQualityImgSrc(img);
-    const blobUrl = await loadImgWithTimeout(src, timeout).catch((e: any) => {
-      if (e.name === 'AbortError') {
-        // console.log('Fetch aborted');
-      } else {
-        console.error(e);
-      }
-    });
-    // prevent future img load requests on #content update
-    takeImgOutsideOfPicture(img, picture); 
-    if (blobUrl) {
-      // trying to prevent flickering since the first blob url load might take up to 50ms
-      await loadImg(blobUrl);
-      img.src = blobUrl;
-    }
-  };
-  const loadBetterQualityArt = async () => {
-    const pictures = document.querySelectorAll("#art picture");
-    const timeout = 5000;
-    pictures.forEach( picture => loadBetterQualityImg(picture, timeout));
-  };
-
-  onMount(() => {
-    prepareArt();
-    loadBetterQualityArt();
-  })
+  onMount(prepareArt)
 </script>
 
 
 <div id='art-container' class='container'>
   <div class='container overflow-hidden'>
-    <div id='art'>
+    <div id='art' bind:this={artRef} >
       <div class='container'>
-        <picture>
-          <source srcset="imgs/mountain-small.webp" type="image/webp">
-          <img id='mountain' src='imgs/mountain-smallest.png' data-src='imgs/mountain' alt='mountain'>
-        </picture>
-        <div id='rv-squirrel-container' class='container hide'>
-          <picture>
-            <source srcset="imgs/rv-small.webp" type="image/webp">
-            <img id='rv' src='imgs/rv-smallest.png' alt='hippie van' data-src='imgs/rv'>
-          </picture>
-
+        <CachedImg 
+          key={'mountain'} 
+          props={{
+            id: 'mountain',
+            alt: 'mountain'
+          }}
+          urls={{
+            initial: {png: 'imgs/mountain-smallest.png', webp: 'imgs/mountain-small.webp'},
+            mobile: {png: 'imgs/mountain-small.png', webp: 'imgs/mountain-small.webp'},
+            main: {png: 'imgs/mountain.png', webp: 'imgs/mountain.webp'}
+          }} 
+        />
+        <div id='rv-squirrel-container' class='container hide' bind:this={rvContainerRef} >
+          <CachedImg 
+            key={'bus'} 
+            props={{
+              id: 'rv',
+              alt: 'hippie van'
+            }}
+            urls={{
+              initial: {png: 'imgs/rv-smallest.png', webp: 'imgs/rv-small.webp'},
+              mobile: {png: 'imgs/rv-small.png', webp: 'imgs/rv-small.webp'},
+              main: {png: 'imgs/rv.png', webp: 'imgs/rv.webp'}
+            }} 
+          />
           <div class="squirrel animate-squirrel"></div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 
 <style lang="scss">
@@ -158,17 +105,21 @@ const prepareArt = () => {
 }
 
 
-#rv, #mountain {
-  position: absolute;
-}
+// :global() #mountain {
+//   position: absolute;
+// }
 
-#rv {
+:global(#rv)  {
+  position: absolute;
+
   width: var(--rv-width);
   top: var(--rv-top);
   right: var(--rv-right); /* 44% */
 }
 
-#mountain {
+:global(#mountain ) {
+  position: absolute;
+
   width: 100%;
   right: 0px;
   opacity: 0.8;
